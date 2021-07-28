@@ -1,0 +1,34 @@
+local ServerStorage = game:GetService("ServerStorage")
+local RealHats = ServerStorage.RealAvatarItems:GetChildren()
+
+local FakeHats = workspace:WaitForChild("FAKEAvatarItems"):GetChildren()
+
+local function GiveHat(player,FakeHat)
+	
+	local Character = player.Character or player.CharacterAdded:Wait()
+	local HatCheck = Character:FindFirstChild(FakeHat.Name)
+	local Humanoid = Character:WaitForChild("Humanoid")
+	
+	Humanoid:RemoveAccessories()
+	
+	if not HatCheck then
+		for i,RealHat in pairs(RealHats) do
+			if FakeHat.Name == RealHat.Name then
+				local ClonedHat = RealHat:Clone()
+				Humanoid:AddAccessory(ClonedHat)
+			end
+		end
+	end -- Ends the "if not HatCheck" then statement
+end -- Ends the GiveHat function
+
+for i,FakeHat in pairs(FakeHats) do
+	
+	local Handle = FakeHat:FindFirstChild("Handle")
+	local ClickDetector = Handle.ClickDetector
+	
+	if Handle and ClickDetector then
+		ClickDetector.MouseClick:Connect(function(player)
+			GiveHat(player,FakeHat)
+		end) -- Ends the ClickDetectorr function
+	end -- Ends the "if Handle" then statement
+end -- Ends the "for i,FakeHat in pairs" loop
